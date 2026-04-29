@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AirOps - FlyDesk</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial;
+      display: flex;
+    }
+
+    .sidebar {
+      width: 220px;
+      background: #0b1f3a;
+      color: white;
+      height: 100vh;
+      padding: 20px;
+    }
+
+    .sidebar h2 {
+      margin-bottom: 30px;
+    }
+
+    .sidebar a {
+      display: block;
+      margin: 10px 0;
+      color: white;
+      text-decoration: none;
+    }
+
+    .main {
+      flex: 1;
+      padding: 20px;
+      background: #f4f6f9;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      margin-top: 20px;
+    }
+
+    th, td {
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .Activo { color: green; }
+    .Retrasado { color: orange; }
+
+  </style>
+</head>
+
+<body>
+
+<div class="sidebar">
+  <h2>✈ AirOps</h2>
+  <a href="#">FlyDesk</a>
+  <a href="#">Vuelos</a>
+  <a href="pilotos.html">Pilotos</a>
+</div>
+
+<div class="main">
+  <h1>FlyDesk</h1>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Código</th>
+        <th>Ruta</th>
+        <th>Piloto</th>
+        <th>Estado</th>
+      </tr>
+    </thead>
+    <tbody id="tabla"></tbody>
+  </table>
+</div>
+
+<script>
+fetch('http://localhost:3000/vuelos')
+  .then(res => res.json())
+  .then(data => {
+    const tabla = document.getElementById('tabla');
+
+    data.forEach(v => {
+      const fila = `
+        <tr>
+          <td>${v.codigo}</td>
+          <td>${v.ruta}</td>
+          <td>${v.piloto}</td>
+          <td class="${v.estado}">${v.estado}</td>
+        </tr>
+      `;
+      tabla.innerHTML += fila;
+    });
+  });
+</script>
+
+</body>
+</html>

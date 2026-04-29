@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AirOps - Pilotos</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial;
+      display: flex;
+    }
+
+    .sidebar {
+      width: 220px;
+      background: #0b1f3a;
+      color: white;
+      height: 100vh;
+      padding: 20px;
+    }
+
+    .sidebar a {
+      display: block;
+      margin: 10px 0;
+      color: white;
+      text-decoration: none;
+    }
+
+    .main {
+      flex: 1;
+      padding: 20px;
+      background: #f4f6f9;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+    }
+
+    th, td {
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="sidebar">
+  <h2>✈ AirOps</h2>
+  <a href="/index.html">FlyDesk</a>
+  <a href="/index.html">Vuelos</a>
+  <a href="/pilotos.html">Pilotos</a>
+</div>
+
+<div class="main">
+  <h1>Lista de Pilotos</h1>
+
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+      </tr>
+    </thead>
+    <tbody id="tabla"></tbody>
+  </table>
+</div>
+
+<script>
+fetch('http://localhost:3000/pilotos')
+  .then(res => res.json())
+  .then(data => {
+    const tabla = document.getElementById('tabla');
+
+    data.forEach(p => {
+      const fila = `
+        <tr>
+          <td>${p.id}</td>
+          <td>${p.nombre}</td>
+        </tr>
+      `;
+      tabla.innerHTML += fila;
+    });
+  });
+</script>
+
+</body>
+</html>
