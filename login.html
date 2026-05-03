@@ -119,6 +119,7 @@ background-size: auto, cover;
 function login() {
   const usuario = document.getElementById('usuario').value;
   const password = document.getElementById('password').value;
+  localStorage.setItem('usuario', usuario);
 
   fetch('http://localhost:3000/login', {
     method: 'POST',

@@ -60,6 +60,21 @@ app.get('/pilotos', async (req, res) => {
   }
 });
 
+//  Aviones
+app.get('/aviones', async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT id, matricula, marca, modelo, capacidad, estado
+      FROM aviones
+    `);
+
+    res.json(result.rows);
+  } catch (error) {
+    console.error('❌ ERROR EN AVIONES:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 app.listen(3000, () => {
   console.log(' Servidor en http://localhost:3000');
 });

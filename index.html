@@ -2,53 +2,262 @@
 <html>
 <head>
   <title>AirOps - FlyDesk</title>
+
   <style>
     body {
       margin: 0;
       font-family: Arial;
       display: flex;
+      background: #f4f6f9;
     }
 
     .sidebar {
       width: 220px;
       background: #0b1f3a;
       color: white;
-      height: 100vh;
       padding: 20px;
     }
 
     .sidebar h2 {
-      margin-bottom: 30px;
+      margin-bottom: 20px;
     }
 
     .sidebar a {
       display: block;
-      margin: 10px 0;
+      margin: 12px 0;
       color: white;
       text-decoration: none;
     }
 
+    #usuarioLogueado {
+      font-size: 13px;
+      margin-bottom: 20px;
+      background: #122a4d;
+      padding: 8px;
+      border-radius: 6px;
+      color: #cbd5e1;
+    }
+
+    .logout {
+      margin-top: 40px;
+      color: #ffffff !important;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .logout:hover {
+      color: #ffffff !important;
+    }
+
     .main {
       flex: 1;
+      padding: 25px;
+    }
+
+    .header {
+      margin-bottom: 20px;
+    }
+
+    .header p {
+      color: #555;
+    }
+
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 18px;
+      margin-bottom: 25px;
+    }
+
+    .summary-card {
+      background: white;
+      padding: 18px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .summary-card h3 {
+      margin: 0;
+      color: #555;
+      font-size: 14px;
+    }
+
+    .summary-card p {
+      margin: 10px 0 0;
+      font-size: 30px;
+      font-weight: bold;
+      color: #0b1f3a;
+    }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 20px;
+    }
+
+    .panel {
+      background: white;
+      border-radius: 12px;
       padding: 20px;
-      background: #f4f6f9;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      background: white;
-      margin-top: 20px;
     }
 
     th, td {
-      padding: 10px;
+      padding: 12px;
       border-bottom: 1px solid #ddd;
     }
 
-    .Activo { color: green; }
-    .Retrasado { color: orange; }
+    .estado {
+      padding: 6px 10px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: bold;
+    }
 
+    .Activo {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .Retrasado {
+      background: #fff3cd;
+      color: #856404;
+    }
+
+    .alerta-badge {
+      padding: 6px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .alerta-alta {
+      background: #f8d7da;
+      color: #721c24;
+    }
+
+    .alerta-media {
+      background: #fff3cd;
+      color: #856404;
+    }
+
+    .alert-card {
+      border-left: 5px solid #dc3545;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+
+    .alert-card.media {
+      border-left-color: #ffc107;
+    }
+
+    .btn {
+      padding: 8px 12px;
+      border: none;
+      background: #0b1f3a;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      background: #163a66;
+    }
+
+    .proximos-vuelos {
+      margin-top: 25px;
+    }
+
+    .proximo-card {
+      background: #f8fafc;
+      border-left: 5px solid #2563eb;
+      padding: 14px;
+      border-radius: 10px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .proximo-card h3 {
+      margin: 0 0 8px;
+      color: #0b1f3a;
+    }
+
+    .proximo-card p {
+      margin: 5px 0;
+      color: #444;
+      font-size: 14px;
+    }
+
+    .proximo-tag {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 5px 9px;
+      background: #dbeafe;
+      color: #1e40af;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .popup-alerta {
+      position: fixed;
+      top: 25px;
+      right: 25px;
+      width: 320px;
+      background: white;
+      border-left: 6px solid #dc3545;
+      border-radius: 10px;
+      padding: 15px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+      z-index: 9999;
+      display: none;
+      animation: aparecer 0.4s ease;
+    }
+
+    @keyframes aparecer {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .popup-alerta h3 {
+      margin: 0 0 8px;
+      color: #0b1f3a;
+    }
+
+    .popup-alerta p {
+      margin: 0;
+      font-size: 14px;
+      color: #444;
+    }
+
+    .popup-alerta button {
+      margin-top: 12px;
+      padding: 7px 10px;
+      border: none;
+      background: #0b1f3a;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    @media (max-width: 900px) {
+      .content-grid {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
 
@@ -56,45 +265,211 @@
 
 <div class="sidebar">
   <h2>✈ AirOps</h2>
-  <a href="#">FlyDesk</a>
-  <a href="#">Vuelos</a>
-  <a href="pilotos.html">Pilotos</a>
+
+  <p id="usuarioLogueado"></p>
+
+  <a href="/index.html">FlyDesk</a>
+  <a href="/pilotos.html">Pilotos</a>
+  <a href="/aviones.html">Aviones</a>
+  <a href="#" class="logout" onclick="cerrarSesion()">Cerrar sesión</a>
 </div>
 
 <div class="main">
-  <h1>FlyDesk</h1>
+  <div class="header">
+    <h1>FlyDesk</h1>
+    <p>Panel de monitoreo de vuelos, próximos vuelos y alertas operativas.</p>
+  </div>
 
-  <table>
-    <thead>
-      <tr>
-        <th>Código</th>
-        <th>Ruta</th>
-        <th>Piloto</th>
-        <th>Estado</th>
-      </tr>
-    </thead>
-    <tbody id="tabla"></tbody>
-  </table>
+  <div class="summary">
+    <div class="summary-card">
+      <h3>Vuelos activos</h3>
+      <p id="totalVuelos">0</p>
+    </div>
+
+    <div class="summary-card">
+      <h3>Vuelos retrasados</h3>
+      <p id="totalRetrasados">0</p>
+    </div>
+
+    <div class="summary-card">
+      <h3>Próximos vuelos</h3>
+      <p>3</p>
+    </div>
+  </div>
+
+  <div class="content-grid">
+    <div class="panel">
+      <h2>Vuelos en seguimiento</h2>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Código</th>
+            <th>Ruta</th>
+            <th>Piloto</th>
+            <th>Estado</th>
+            <th>Alerta</th>
+          </tr>
+        </thead>
+        <tbody id="tabla"></tbody>
+      </table>
+
+      <div class="proximos-vuelos">
+        <h2>Próximos vuelos</h2>
+
+        <div class="proximo-card">
+          <h3>AV305 · Guatemala - Panamá</h3>
+          <p><strong>Fecha:</strong> 13-05-2026</p>
+          <p><strong>Horario:</strong> 14:30</p>
+          <p><strong>Piloto:</strong> Oscar Hernández</p>
+          <p><strong>Aeronave:</strong> Boeing 737 · GT-A101</p>
+          <span class="proximo-tag">Programado</span>
+        </div>
+
+        <div class="proximo-card">
+          <h3>AV410 · Guatemala - Bogotá</h3>
+          <p><strong>Fecha:</strong> 13-05-2026</p>
+          <p><strong>Horario:</strong> 16:15</p>
+          <p><strong>Piloto:</strong> Juan Pérez</p>
+          <p><strong>Aeronave:</strong> Airbus A320 · GT-A202</p>
+          <span class="proximo-tag">Asignación próxima</span>
+        </div>
+
+        <div class="proximo-card">
+          <h3>AV512 · Guatemala - Miami</h3>
+          <p><strong>Fecha:</strong> 14-05-2026</p>
+          <p><strong>Horario:</strong> 18:00</p>
+          <p><strong>Piloto:</strong> Carlos Méndez</p>
+          <p><strong>Aeronave:</strong> Pendiente de confirmación</p>
+          <span class="proximo-tag">Pendiente</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>Alertas operativas</h2>
+
+      <div class="alert-card">
+        <h3>AV101 · Proximidad</h3>
+        <p>Posible proximidad en ruta Guatemala - México.</p>
+        <button class="btn" onclick="alert('Comunicación con cabina iniciada para AV101')">
+          Comunicar cabina
+        </button>
+      </div>
+
+      <div class="alert-card media">
+        <h3>AV202 · Retraso</h3>
+        <p>El vuelo presenta retraso en su salida.</p>
+        <button class="btn" onclick="alert('Seguimiento registrado para AV202')">
+          Registrar seguimiento
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="popup-alerta" id="popupAlerta">
+  <h3>⚠ Alerta operativa</h3>
+  <p>Proximidad detectada entre aeronaves en ruta AV101.</p>
+  <button onclick="cerrarAlerta()">Entendido</button>
 </div>
 
 <script>
+const usuario = localStorage.getItem('usuario');
+
+if (usuario) {
+  document.getElementById('usuarioLogueado').innerHTML = "👤 " + usuario;
+} else {
+  document.getElementById('usuarioLogueado').innerHTML = "👤 Invitado";
+}
+
 fetch('http://localhost:3000/vuelos')
   .then(res => res.json())
   .then(data => {
     const tabla = document.getElementById('tabla');
+    const totalVuelos = document.getElementById('totalVuelos');
+    const totalRetrasados = document.getElementById('totalRetrasados');
+
+    let retrasados = 0;
 
     data.forEach(v => {
-      const fila = `
+      if (v.estado === 'Retrasado') retrasados++;
+
+      let alerta = v.estado === 'Retrasado'
+        ? '<span class="alerta-badge alerta-media">Retraso</span>'
+        : '<span class="alerta-badge alerta-alta">Proximidad</span>';
+
+      tabla.innerHTML += `
         <tr>
           <td>${v.codigo}</td>
           <td>${v.ruta}</td>
           <td>${v.piloto}</td>
-          <td class="${v.estado}">${v.estado}</td>
+          <td><span class="estado ${v.estado}">${v.estado}</span></td>
+          <td>${alerta}</td>
         </tr>
       `;
-      tabla.innerHTML += fila;
     });
+
+    totalVuelos.textContent = data.length;
+    totalRetrasados.textContent = retrasados;
   });
+
+function reproducirSonidoAlerta() {
+  const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  const oscillator = audioContext.createOscillator();
+  const gainNode = audioContext.createGain();
+
+  oscillator.type = 'sine';
+  oscillator.frequency.setValueAtTime(880, audioContext.currentTime);
+
+  gainNode.gain.setValueAtTime(0.15, audioContext.currentTime);
+  gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.5);
+
+  oscillator.connect(gainNode);
+  gainNode.connect(audioContext.destination);
+
+  oscillator.start();
+  oscillator.stop(audioContext.currentTime + 0.5);
+}
+
+function mostrarAlerta() {
+  document.getElementById('popupAlerta').style.display = 'block';
+  reproducirMensajeVoz();
+
+  try {
+    reproducirSonidoAlerta();
+  } catch (error) {
+    console.log('El navegador bloqueó el sonido automático.');
+  }
+}
+
+function cerrarAlerta() {
+  document.getElementById('popupAlerta').style.display = 'none';
+}
+
+setTimeout(mostrarAlerta, 4000);
+
+function cerrarSesion() {
+  const confirmar = confirm('¿Deseas cerrar sesión?');
+
+  if (confirmar) {
+    localStorage.clear();
+    sessionStorage.clear();
+    window.location.href = '/login.html';
+  }
+}
+
+function reproducirMensajeVoz() {
+  const mensaje = new SpeechSynthesisUtterance(
+    'Alerta operativa. Posible proximidad detectada en el vuelo AV101. Se recomienda comunicar con cabina.'
+  );
+
+  mensaje.lang = 'es-ES';
+  mensaje.rate = 0.95;
+  mensaje.pitch = 1;
+
+  speechSynthesis.speak(mensaje);
+}
 </script>
 
 </body>

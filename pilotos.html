@@ -8,6 +8,7 @@
       margin: 0;
       font-family: Arial;
       display: flex;
+      background: #f4f6f9;
     }
 
     .sidebar {
@@ -20,26 +21,96 @@
 
     .sidebar a {
       display: block;
-      margin: 10px 0;
+      margin: 12px 0;
       color: white;
       text-decoration: none;
     }
 
+    #usuarioLogueado {
+      font-size: 13px;
+      margin-bottom: 20px;
+      background: #122a4d;
+      padding: 8px;
+      border-radius: 6px;
+      color: #cbd5e1;
+    }
+
+    .logout {
+      margin-top: 40px;
+      color: #ffffff !important;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
     .main {
       flex: 1;
-      padding: 20px;
-      background: #f4f6f9;
+      padding: 25px;
     }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
+    .header p {
+      color: #555;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .card {
       background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      transition: 0.2s;
     }
 
-    th, td {
-      padding: 10px;
-      border-bottom: 1px solid #ddd;
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    .avatar-img {
+      width: 100%;
+      height: 260px;
+      border-radius: 12px;
+      background-size: cover;
+      background-position: center top;
+      background-repeat: no-repeat;
+      margin-bottom: 15px;
+    }
+
+    .estado {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: bold;
+      margin-top: 8px;
+    }
+
+    .disponible {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .asignado {
+      background: #d1ecf1;
+      color: #0c5460;
+    }
+
+    .btn {
+      margin-top: 14px;
+      padding: 8px 12px;
+      border: none;
+      background: #0b1f3a;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      background: #163a66;
     }
   </style>
 </head>
@@ -48,41 +119,91 @@
 
 <div class="sidebar">
   <h2>✈ AirOps</h2>
+  <p id="usuarioLogueado"></p>
+
   <a href="/index.html">FlyDesk</a>
-  <a href="/index.html">Vuelos</a>
   <a href="/pilotos.html">Pilotos</a>
+  <a href="/aviones.html">Aviones</a>
+  <a href="#" class="logout" onclick="cerrarSesion()">Cerrar sesión</a>
 </div>
 
 <div class="main">
-  <h1>Lista de Pilotos</h1>
+  <div class="header">
+    <h1>Gestión de Pilotos</h1>
+    <p>Consulta de pilotos registrados, disponibilidad y vuelos asignados.</p>
+  </div>
 
-  <table>
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Nombre</th>
-      </tr>
-    </thead>
-    <tbody id="tabla"></tbody>
-  </table>
+  <div class="cards" id="contenedorPilotos"></div>
 </div>
 
 <script>
-fetch('http://localhost:3000/pilotos')
-  .then(res => res.json())
-  .then(data => {
-    const tabla = document.getElementById('tabla');
+const usuario = localStorage.getItem('usuario');
+document.getElementById('usuarioLogueado').innerHTML =
+  usuario ? "👤 " + usuario : "👤 Invitado";
 
-    data.forEach(p => {
-      const fila = `
-        <tr>
-          <td>${p.id}</td>
-          <td>${p.nombre}</td>
-        </tr>
-      `;
-      tabla.innerHTML += fila;
-    });
-  });
+const pilotosExtra = [
+  {
+    id: 1,
+    nombre: 'Juan Pérez',
+    licencia: 'GT-PIL-1020',
+    experiencia: '8 años',
+    vuelo: 'AV101',
+    estado: 'Asignado',
+    imagen: 'img/piloto1.png'
+  },
+  {
+    id: 2,
+    nombre: 'Carlos Méndez',
+    licencia: 'GT-PIL-2034',
+    experiencia: '6 años',
+    vuelo: 'AV202',
+    estado: 'Asignado',
+    imagen: 'img/piloto2.png'
+  },
+  {
+    id: 3,
+    nombre: 'Oscar Hernández',
+    licencia: 'GT-PIL-3288',
+    experiencia: '10 años',
+    vuelo: 'Sin asignar',
+    estado: 'Disponible',
+    imagen: 'img/piloto3.png'
+  }
+];
+
+const contenedor = document.getElementById('contenedorPilotos');
+
+pilotosExtra.forEach(p => {
+  const claseEstado = p.estado.toLowerCase();
+
+  const card = `
+    <div class="card">
+      <div class="avatar-img" style="background-image: url('${p.imagen}')"></div>
+      <h2>${p.nombre}</h2>
+      <p><strong>ID:</strong> ${p.id}</p>
+      <p><strong>Licencia:</strong> ${p.licencia}</p>
+      <p><strong>Experiencia:</strong> ${p.experiencia}</p>
+      <p><strong>Vuelo asignado:</strong> ${p.vuelo}</p>
+      <span class="estado ${claseEstado}">${p.estado}</span>
+      <br>
+      <button class="btn" onclick="window.location.href='/index.html'">
+        Ver en FlyDesk
+      </button>
+    </div>
+  `;
+
+  contenedor.innerHTML += card;
+});
+
+function cerrarSesion() {
+  const confirmar = confirm('¿Deseas cerrar sesión?');
+
+  if (confirmar) {
+    localStorage.clear();
+    sessionStorage.clear();
+    window.location.href = '/login.html';
+  }
+}
 </script>
 
 </body>
